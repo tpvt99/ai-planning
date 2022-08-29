@@ -457,7 +457,11 @@ def test():
     WIDTH = test_config[test_case_number]['width']
     RANDOM_SEED = test_config[test_case_number]['seed']
 
-    env=gym.make('GridDriving-v0', lanes=LANES, width=WIDTH, random_seed=RANDOM_SEED, agent_speed_range=(-1,-1))
+    if args.problem == "parking":
+        env=gym.make('GridDriving-v0', lanes=LANES, width=WIDTH, random_seed=RANDOM_SEED, agent_speed_range=(-1,-1))
+    elif args.problem == "crossing":
+        env = gym.make('GridDriving-v0', lanes=LANES, width=WIDTH, random_seed=RANDOM_SEED, agent_speed_range=(-3, -1))
+
     gen = initializeSystem(env)
     generateDomainPDDLFile(gen)
     generateProblemPDDLFile(gen)
