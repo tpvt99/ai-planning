@@ -194,8 +194,25 @@ class GeneratePDDL_Stationary :
 
         return "(at apn1 apt2) (at tru1 pos1) (at obj11 pos1) (at obj12 pos1) (at obj13 pos1) (at tru2 pos2) (at obj21 pos2) (at obj22 pos2)
                 (at obj23 pos2) (in-city pos1 cit1) (in-city apt1 cit1) (in-city pos2 cit2) (in-city apt2 cit2)" 
-        '''  
-        return ''
+        '''
+        init_string = "(and "
+
+        # Get the state of car
+        agent_grid_cell = self.grid_cell_list[self.num_lanes * self.state.agent.position.x +
+                                            self.state.agent.position.y]
+        agent_string = f"(at agent1 {agent_grid_cell})"
+
+        # Get block position
+        car_string = ""
+        for car in self.state.cars:
+            x_pos = car.position.x
+            y_pos = car.position.y
+            car_grid_cell = self.grid_cell_list[self.num_lanes * x_pos +y_pos]
+            car_string += f" (blocked {car_grid_cell})"
+
+        init_string = init_string + agent_string + car_string
+
+        return init_string
 
 
     def generateGoalString(self) :
@@ -212,8 +229,11 @@ class GeneratePDDL_Stationary :
         Example: The following statement adds goal string from https://github.com/pellierd/pddl4j/blob/master/pddl/logistics/p01.pddl  
 
         return "(and (at obj11 apt1) (at obj23 pos1) (at obj13 apt1) (at obj21 pos1)))"
-        '''    
-        return ''
+        '''
+        goal_grid_cell = self.grid_cell_list[self.num_lanes * self.state.finish_position.x +
+                                              self.state.finish_position.y]
+        goal_string = f"(at agent1 {goal_grid_cell})"
+        return goal_string
 
 
     def generateProblemPDDL(self) :
@@ -383,9 +403,9 @@ def test():
     gen = initializeSystem(env)
     generateDomainPDDLFile(gen)
     generateProblemPDDLFile(gen)
-    runPDDLSolver(gen)
-    simulateSolution(env)
-    delete_files(gen)
+    #runPDDLSolver(gen)
+    #simulateSolution(env)
+    #delete_files(gen)
 
 
 try:
